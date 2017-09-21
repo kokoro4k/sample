@@ -16,6 +16,7 @@ class UsersController extends Controller
      */
     public function __construct()
     {
+        //中间件黑名单 except 数组中指定的动作，其他的动作都必须登录以后才能操作。
         $this->middleware('auth', [
             'except' => ['show', 'create', 'store', 'index']
         ]);
@@ -103,5 +104,18 @@ class UsersController extends Controller
         session()->flash('success', '个人资料更新成功！');
 
         return redirect()->route('users.show', $user->id);
+    }
+
+    /**
+     * 管理员删除用户
+     * @param User $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(User $user)
+    {
+        $this->authorize('destroy', $user);
+        $user->delete();
+        session()->flash('success', '成功删除用户！');
+        return back();
     }
 }
