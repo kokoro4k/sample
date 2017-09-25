@@ -6,6 +6,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Notifications\ResetPassword;
 
+/**
+ * Class User   用户模型
+ * @package App\Models
+ */
 class User extends Authenticatable
 {
     use Notifiable;
@@ -49,8 +53,21 @@ class User extends Authenticatable
         return "http://www.gravatar.com/avatar/$hash?s=$size";
     }
 
+    /**
+     * 用于用户重置密码操作
+     * @param string $token
+     */
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPassword($token));
+    }
+
+    /**
+     * 指明用户和微博的关系是一对多 使用了微博动态的复数形式 statuses 来作为定义的函数名
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function statuses()
+    {
+        return $this->hasMany(Status::class);
     }
 }
